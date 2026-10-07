@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f6b4f">
+<title>Minhas Vendas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#f4f6f5; --card:#fff; --text:#1c2421; --muted:#66736e; --line:#e2e7e4;
+  --pri:#1f6b4f; --pri-2:#e3f1ea; --red:#c0392b; --red-2:#fbe9e7; --amber:#b7791f; --amber-2:#fdf3e1;
+  --blue:#2b6cb0; --blue-2:#e6f0fa; --wa:#1fa855;
+  --r:14px; --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#111614;--card:#1a211e;--text:#e8eeeb;--muted:#9aa8a2;--line:#2a332f;
+    --pri:#3fae84;--pri-2:#1d3a2e;--red:#ef6f62;--red-2:#3a201d;--amber:#e0a84a;--amber-2:#3a2f1a;
+    --blue:#6aa8e8;--blue-2:#1b2b3d;--shadow:none}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:5;background:#1f6b4f;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px}
+header h1{font-size:19px;margin:0;flex:1;font-weight:650}
+header button{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:10px;padding:8px 10px;font-size:18px}
+main{padding:14px 16px;max-width:680px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:5;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:0;padding:8px 2px 10px;color:var(--muted);font-size:11.5px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button .i{font-size:21px;line-height:1}
+nav button.on{color:var(--pri);font-weight:650}
+nav button.add .i{background:var(--pri);color:#fff;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;margin-top:-4px;font-size:24px}
+.card{background:var(--card);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);margin-bottom:12px;border:1px solid var(--line)}
+h2{font-size:17px;margin:18px 0 10px}
+h2:first-child{margin-top:4px}
+.muted{color:var(--muted);font-size:14px}
+.small{font-size:13px}
+.row{display:flex;align-items:center;gap:10px}
+.grow{flex:1;min-width:0}
+.between{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{border-radius:var(--r);padding:12px;background:var(--card);border:1px solid var(--line)}
+.stat b{display:block;font-size:20px;margin-top:2px}
+.stat.red{background:var(--red-2);border-color:transparent}.stat.red b{color:var(--red)}
+.stat.amber{background:var(--amber-2);border-color:transparent}.stat.amber b{color:var(--amber)}
+.stat.green{background:var(--pri-2);border-color:transparent}.stat.green b{color:var(--pri)}
+.stat.blue{background:var(--blue-2);border-color:transparent}.stat.blue b{color:var(--blue)}
+.item{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;font-weight:600}
+.tag.red{background:var(--red-2);color:var(--red)}.tag.amber{background:var(--amber-2);color:var(--amber)}
+.tag.green{background:var(--pri-2);color:var(--pri)}.tag.gray{background:var(--line);color:var(--muted)}
+.tag.blue{background:var(--blue-2);color:var(--blue)}
+.btn{border:0;border-radius:11px;padding:11px 14px;font-size:15px;font-weight:600;background:var(--pri);color:#fff;cursor:pointer}
+.btn.sec{background:var(--pri-2);color:var(--pri)}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn.danger{background:var(--red-2);color:var(--red)}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.full{width:100%}
+.btn.sm{padding:8px 11px;font-size:14px;border-radius:10px}
+.icon-btn{border:0;border-radius:10px;width:42px;height:42px;display:grid;place-items:center;font-size:19px;flex:none}
+.icon-btn.wa{background:var(--wa);color:#fff}
+.icon-btn.ok{background:var(--pri-2);color:var(--pri)}
+label{display:block;font-size:14px;color:var(--muted);margin:12px 0 5px;font-weight:550}
+input,select,textarea{width:100%;font:inherit;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 12px}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--pri);border-color:transparent}
+.seg{display:flex;background:var(--line);border-radius:11px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:transparent;border-radius:9px;padding:9px 4px;font:inherit;font-size:14px;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--text);font-weight:650;box-shadow:var(--shadow)}
+.empty{text-align:center;color:var(--muted);padding:26px 10px}
+.banner{background:var(--amber-2);color:var(--amber);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;font-size:14px;display:flex;gap:10px;align-items:center}
+.banner .btn{background:var(--amber);color:#fff}
+.money{font-variant-numeric:tabular-nums;white-space:nowrap}
+.check{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:15px;color:var(--text)}
+.check input{width:22px;height:22px}
+.preview{font-size:14px;max-height:180px;overflow:auto}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:680px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+.sheet h3{margin:0 0 6px;font-size:18px}
+.sheet .actions{display:flex;gap:10px;margin-top:18px}
+.sheet .actions .btn{flex:1}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:99px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.search{margin-bottom:12px}
+.monthbar{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.monthbar b{flex:1;text-align:center}
+.monthbar button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;width:40px;height:38px;font-size:18px}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+code.pix{display:block;word-break:break-all;font-size:12px;background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="titulo">Minhas Vendas</h1>
+  <button id="btnConfig" aria-label="Configurações">⚙️</button>
+</header>
+<main id="app"></main>
+<nav id="nav">
+  <button data-tab="inicio"><span class="i">🏠</span>Início</button>
+  <button data-tab="clientes"><span class="i">👥</span>Clientes</button>
+  <button data-tab="nova" class="add"><span class="i">+</span>Venda</button>
+  <button data-tab="vendas"><span class="i">🧾</span>Vendas</button>
+  <button data-tab="resumo"><span class="i">📊</span>Resumo</button>
+</nav>
+<div id="toast" class="toast"></div>
+
+<script>
+'use strict';
+/* ================= Dados ================= */
+const KEY = 'minhasVendas_v1';
+const MSG_PADRAO =
+`Oi {cliente}! Tudo bem? 😊
+Passando para lembrar da parcela {parcela} de {valor} ({produtos}), {situacao}.
+{pix}
+Qualquer dúvida é só me chamar. Obrigada! 💜
+{assinatura}`;
+
+let db = carregar();
+function vazio(){return {clientes:[],vendas:[],parcelas:[],gastos:[],config:{nome:'',pixTipo:'cpf',pixChave:'',pixNome:'',pixCidade:'',msg:MSG_PADRAO,ultimoBackup:null}}}
+function carregar(){
+  try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.clientes){d.config={...vazio().config,...d.config};d.gastos=d.gastos||[];return d}}catch(e){}
+  return vazio();
+}
+function salvar(){localStorage.setItem(KEY,JSON.stringify(db))}
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+
+/* ================= Utilidades ================= */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const brl=c=>(c/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function centavos(v){
+  if(typeof v==='number')return Math.round(v*100);
+  v=String(v||'').replace(/[^\d,.-]/g,'');
+  if(v.includes(','))v=v.replace(/\./g,'').replace(',','.');
+  const n=parseFloat(v);return isNaN(n)?0:Math.round(n*100);
+}
+const valorInput=c=>c?(c/100).toFixed(2).replace('.',','):'';
+const pad=n=>String(n).padStart(2,'0');
+const isoDe=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const dataDe=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const hoje=()=>isoDe(new Date());
+const addDias=(s,n)=>{const d=dataDe(s);d.setDate(d.getDate()+n);return isoDe(d)};
+function addMeses(s,n,dia){
+  const d=dataDe(s);const alvo=new Date(d.getFullYear(),d.getMonth()+n,1);
+  const ult=new Date(alvo.getFullYear(),alvo.getMonth()+1,0).getDate();
+  alvo.setDate(Math.min(dia||d.getDate(),ult));return isoDe(alvo);
+}
+const fmt=s=>{const[y,m,d]=s.split('-');return `${d}/${m}/${y}`};
+const fmtCurto=s=>{const[,m,d]=s.split('-');return `${d}/${m}`};
+const diasEntre=(a,b)=>Math.round((dataDe(b)-dataDe(a))/864e5);
+const mesDe=s=>s.slice(0,7);
+const nomeMes=ym=>{const[y,m]=ym.split('-').map(Number);const t=new Date(y,m-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});return t[0].toUpperCase()+t.slice(1)};
+const addMesYM=(ym,n)=>addMeses(ym+'-01',n,1).slice(0,7);
+const soDigitos=s=>String(s||'').replace(/\D/g,'');
+function fmtTel(t){const d=soDigitos(t);if(d.length===11)return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;if(d.length===10)return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;return t||''}
+function telWa(t){let d=soDigitos(t);if(!d)return '';if(d.length<=11)d='55'+d;return d}
+const FORMAS={pix:'Pix',cartao:'Cartão',dinheiro:'Dinheiro'};
+const cliente=id=>db.clientes.find(c=>c.id===id)||{nome:'(cliente removido)',tel:''};
+const venda=id=>db.vendas.find(v=>v.id===id);
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2200)}
+
+/* ================= Pix (BR Code copia e cola) ================= */
+function semAcento(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z0-9 ]/g,'').trim()}
+function crc16(s){let c=0xFFFF;for(let i=0;i<s.length;i++){c^=s.charCodeAt(i)<<8;for(let j=0;j<8;j++)c=(c&0x8000)?((c<<1)^0x1021)&0xFFFF:(c<<1)&0xFFFF}return c.toString(16).toUpperCase().padStart(4,'0')}
+const tlv=(id,v)=>id+String(v.length).padStart(2,'0')+v;
+function chavePix(){
+  const {pixTipo:t,pixChave:k}=db.config;if(!k)return '';
+  if(t==='cpf'||t==='cnpj')return soDigitos(k);
+  if(t==='tel'){let d=soDigitos(k);if(d.length<=11)d='55'+d;return '+'+d}
+  if(t==='email')return k.trim().toLowerCase();
+  return k.trim();
+}
+function pixOk(){return !!(chavePix()&&semAcento(db.config.pixNome)&&semAcento(db.config.pixCidade))}
+function gerarPix(valorC){
+  const chave=chavePix();if(!chave)return '';
+  let p=tlv('00','01')+tlv('26',tlv('00','br.gov.bcb.pix')+tlv('01',chave))+tlv('52','0000')+tlv('53','986');
+  if(valorC>0)p+=tlv('54',(valorC/100).toFixed(2));
+  p+=tlv('58','BR')+tlv('59',semAcento(db.config.pixNome).slice(0,25)||'RECEBEDOR')+tlv('60',semAcento(db.config.pixCidade).slice(0,15)||'BRASIL')+tlv('62',tlv('05','***'))+'6304';
+  return p+crc16(p);
+}
+
+/* ================= Parcelas ================= */
+function situacao(p){
+  const d=diasEntre(hoje(),p.venc);
+  if(p.pago)return {txt:'Recebida',cls:'green'};
+  if(d<0)return {txt:`Atrasada ${-d} dia${d===-1?'':'s'}`,cls:'red'};
+  if(d===0)return {txt:'Vence hoje',cls:'amber'};
+  if(d===1)return {txt:'Vence amanhã',cls:'blue'};
+  return {txt:`Vence ${fmtCurto(p.venc)}`,cls:'gray'};
+}
+const pendentes=()=>db.parcelas.filter(p=>!p.pago).sort((a,b)=>a.venc.localeCompare(b.venc));
+const soma=(arr,f='valor')=>arr.reduce((s,x)=>s+(x[f]||0),0);
+
+function gerarParcelas(v,entradaPaga){
+  const n=Math.max(1,v.nParc|0);const base=Math.floor(v.valor/n);const resto=v.valor-base*n;
+  const dia=dataDe(v.primeiraVenc).getDate();const lista=[];
+  for(let i=0;i<n;i++){
+    const venc=v.modo==='30'?addDias(v.primeiraVenc,30*i):addMeses(v.primeiraVenc,i,dia);
+    const p={id:uid(),vendaId:v.id,clienteId:v.clienteId,n:i+1,total:n,valor:base+(i===n-1?resto:0),venc,pago:false,pagoEm:null,pagoForma:null};
+    if(i===0&&entradaPaga){p.pago=true;p.pagoEm=v.data;p.pagoForma=v.forma;}
+    lista.push(p);
+  }
+  return lista;
+}
+
+/* ================= Mensagens ================= */
+function textoSituacao(venc){
+  const d=diasEntre(hoje(),venc);
+  if(d<0)return `que venceu em ${fmt(venc)}`;
+  if(d===0)return 'que vence hoje';
+  if(d===1)return `que vence amanhã (${fmt(venc)})`;
+  return `que vence em ${fmt(venc)}`;
+}
+function montarMensagem(ps,incluirPix){
+  const c=cliente(ps[0].clienteId);const total=soma(ps);const primeiro=(c.nome||'').split(' ')[0];
+  // O código vai numa mensagem separada: no WhatsApp, segurar a mensagem copia o texto inteiro
+  const pixTxt=incluirPix&&pixOk()?`\nPara pagar por Pix, vou te mandar o código "copia e cola" na próxima mensagem. É só copiar e colar no app do banco 👇\n`:'';
+  if(ps.length===1){
+    const p=ps[0];const v=venda(p.vendaId)||{};
+    return limpar(db.config.msg
+      .replaceAll('{cliente}',primeiro).replaceAll('{parcela}',p.total>1?`${p.n}/${p.total}`:'única')
+      .replaceAll('{valor}',brl(p.valor)).replaceAll('{produtos}',v.desc||'compra')
+      .replaceAll('{situacao}',textoSituacao(p.venc)).replaceAll('{vencimento}',fmt(p.venc))
+      .replaceAll('{pix}',pixTxt).replaceAll('{assinatura}',db.config.nome||''));
+  }
+  const linhas=ps.map(p=>{const v=venda(p.vendaId)||{};return `• ${v.desc||'Compra'} – parcela ${p.n}/${p.total}: ${brl(p.valor)} (${diasEntre(hoje(),p.venc)<0?'venceu':'vence'} ${fmt(p.venc)})`}).join('\n');
+  return limpar(`Oi ${primeiro}! Tudo bem? 😊\nSegue o resumo das parcelas em aberto:\n${linhas}\n\nTotal: ${brl(total)}\n${pixTxt}\nQualquer dúvida é só me chamar. Obrigada! 💜\n${db.config.nome||''}`);
+}
+const limpar=t=>t.replace(/\n{3,}/g,'\n\n').trim();
+
+/* ================= Navegação ================= */
+let aba='inicio', sub={inicio:'hoje', mes:mesDe(hoje()), busca:'', vendasMes:mesDe(hoje()), vendasTipo:'vendas'};
+const app=document.getElementById('app');
+function ir(t){aba=t;render();window.scrollTo(0,0)}
+document.getElementById('nav').onclick=e=>{const b=e.target.closest('button');if(b)ir(b.dataset.tab)};
+document.getElementById('btnConfig').onclick=()=>ir('config');
+
+function render(){
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===aba));
+  const titulos={inicio:'Cobranças',clientes:'Clientes',nova:'Nova venda',vendas:'Vendas e gastos',resumo:'Resumo',config:'Configurações'};
+  document.getElementById('titulo').textContent=titulos[aba]||'Minhas Vendas';
+  ({inicio:vInicio,clientes:vClientes,nova:vNova,vendas:vVendas,resumo:vResumo,config:vConfig})[aba]();
+}
+
+/* ---------- Linha de parcela ---------- */
+function linhaParcela(p,mostrarCliente=true){
+  const c=cliente(p.clienteId);const v=venda(p.vendaId)||{};const s=situacao(p);
+  return `<div class="item">
+    <div class="grow" data-act="verCliente" data-id="${p.clienteId}" style="cursor:pointer">
+      <div class="t">${mostrarCliente?esc(c.nome):esc(v.desc||'Venda')}</div>
+      <div class="muted small">${mostrarCliente?esc(v.desc||'Venda')+' · ':''}${p.total>1?`${p.n}/${p.total}`:'à vista'} · <span class="tag ${s.cls}">${s.txt}</span></div>
+    </div>
+    <div class="money" style="font-weight:650">${brl(p.valor)}</div>
+    ${!p.pago?`<button class="icon-btn wa" title="Cobrar no WhatsApp" data-act="cobrar" data-id="${p.id}">💬</button>
+    <button class="icon-btn ok" title="Recebi" data-act="receber" data-id="${p.id}">✔</button>`:''}
+  </div>`;
+}
+
+/* ---------- Início ---------- */
+function vInicio(){
+  const h=hoje(), pend=pendentes();
+  const atras=pend.filter(p=>p.venc<h), doDia=pend.filter(p=>p.venc===h);
+  const fimSem=addDias(h,7), semana=pend.filter(p=>p.venc>h&&p.venc<=fimSem);
+  const prox=pend.filter(p=>p.venc>fimSem).slice(0,10);
+  let out='';
+  const ub=db.config.ultimoBackup;
+  if(db.vendas.length&&(!ub||diasEntre(ub.slice(0,10),h)>=7))
+    out+=`<div class="banner"><div class="grow">💾 ${ub?`Último backup há ${diasEntre(ub.slice(0,10),h)} dias.`:'Você ainda não fez backup.'} Faça um para não perder seus dados.</div><button class="btn sm" data-act="backup">Fazer</button></div>`;
+  if(!db.clientes.length){
+    return app.innerHTML=out+`<div class="card empty"><div style="font-size:40px">🛍️</div><p><b>Bem-vindo(a)!</b></p><p>Comece configurando sua chave Pix e depois cadastre sua primeira venda.</p>
+    <button class="btn full" data-act="ir" data-tab="config">Configurar Pix</button><div style="height:8px"></div>
+    <button class="btn sec full" data-act="ir" data-tab="nova">Cadastrar venda</button></div>`;
+  }
+  out+=`<div class="grid2" style="margin-bottom:12px">
+    <div class="stat red"><span class="muted small">Atrasado</span><b class="money">${brl(soma(atras))}</b><span class="small muted">${atras.length} parcela(s)</span></div>
+    <div class="stat amber"><span class="muted small">Vence hoje</span><b class="money">${brl(soma(doDia))}</b><span class="small muted">${doDia.length} parcela(s)</span></div>
+  </div>
+  <div class="seg" style="margin-bottom:12px">
+    <button data-act="sub" data-v="hoje" class="${sub.inicio==='hoje'?'on':''}">Cobrar hoje</button>
+    <button data-act="sub" data-v="semana" class="${sub.inicio==='semana'?'on':''}">Próximos 7 dias</button>
+    <button data-act="sub" data-v="todas" class="${sub.inicio==='todas'?'on':''}">Tudo em aberto</button>
+  </div>`;
+  if(sub.inicio==='hoje'){
+    const l=[...atras,...doDia];
+    out+=`<div class="card">${l.length?`<div class="between"><b>Cobrar hoje</b><span class="money muted">${brl(soma(l))}</span></div>`+l.map(p=>linhaParcela(p)).join(''):'<div class="empty">🎉 Nada para cobrar hoje!</div>'}</div>`;
+  }else if(sub.inicio==='semana'){
+    out+=`<div class="card">${semana.length?`<div class="between"><b>Vencem até ${fmtCurto(fimSem)}</b><span class="money muted">${brl(soma(semana))}</span></div>`+semana.map(p=>linhaParcela(p)).join(''):'<div class="empty">Nenhuma parcela vence nos próximos 7 dias.</div>'}</div>`;
+    if(prox.length)out+=`<h2>Depois disso</h2><div class="card">${prox.map(p=>linhaParcela(p)).join('')}</div>`;
+  }else{
+    out+=`<div class="card">${pend.length?`<div class="between"><b>Total a receber</b><span class="money muted">${brl(soma(pend))}</span></div>`+pend.map(p=>linhaParcela(p)).join(''):'<div class="empty">Nenhuma parcela em aberto.</div>'}</div>`;
+  }
+  app.innerHTML=out;
+}
+
+/* ---------- Clientes ---------- */
+function vClientes(){
+  if(sub.cliente)return vCliente(sub.cliente);
+  const q=semAcento(sub.busca);const pend=pendentes();const h=hoje();
+  const lista=db.clientes.filter(c=>!q||semAcento(c.nome).includes(q)||soDigitos(c.tel).includes(soDigitos(sub.busca)||'#'))
+    .sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  app.innerHTML=`<input class="search" id="busca" placeholder="🔎 Buscar cliente" value="${esc(sub.busca)}">
+  <button class="btn sec full" data-act="novoCliente" style="margin-bottom:12px">+ Novo cliente</button>
+  <div class="card">${lista.length?lista.map(c=>{
+    const pc=pend.filter(p=>p.clienteId===c.id);const at=pc.some(p=>p.venc<h);
+    return `<div class="item" data-act="verCliente" data-id="${c.id}" style="cursor:pointer">
+      <div class="grow"><div class="t">${esc(c.nome)}</div><div class="muted small">${esc(fmtTel(c.tel))||'sem telefone'}</div></div>
+      ${pc.length?`<span class="tag ${at?'red':'gray'} money">${brl(soma(pc))}</span>`:'<span class="tag green">em dia</span>'}
+    </div>`}).join(''):'<div class="empty">Nenhum cliente encontrado.</div>'}</div>`;
+  const b=document.getElementById('busca');
+  b.oninput=()=>{sub.busca=b.value;const pos=b.selectionStart;vClientes();const nb=document.getElementById('busca');nb.focus();nb.setSelectionRange(pos,pos)};
+}
+function vCliente(id){
+  const c=db.clientes.find(x=>x.id===id);if(!c){sub.cliente=null;return vClientes()}
+  const ps=db.parcelas.filter(p=>p.clienteId===id);const pend=ps.filter(p=>!p.pago).sort((a,b)=>a.venc.localeCompare(b.venc));
+  const vs=db.vendas.filter(v=>v.clienteId===id).sort((a,b)=>b.data.localeCompare(a.data));
+  const vencidas=pend.filter(p=>p.venc<=hoje());
+  app.innerHTML=`<button class="btn ghost sm" data-act="voltarClientes">← Clientes</button>
+  <div class="card" style="margin-top:12px">
+    <div class="between"><div class="grow"><div style="font-size:20px;font-weight:700">${esc(c.nome)}</div>
+    <div class="muted">${esc(fmtTel(c.tel))||'sem telefone'}</div>
+    ${c.end?`<div class="muted small">📍 ${esc(c.end)}</div>`:''}${c.obs?`<div class="muted small">📝 ${esc(c.obs)}</div>`:''}</div>
+    <button class="btn sec sm" data-act="editarCliente" data-id="${c.id}">Editar</button></div>
+    <div class="row" style="margin-top:12px;gap:8px">
+      ${c.tel?`<a class="btn wa sm" style="text-decoration:none" href="https://wa.me/${telWa(c.tel)}" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <a class="btn ghost sm" style="text-decoration:none" href="tel:${soDigitos(c.tel)}">📞 Ligar</a>`:''}
+      <button class="btn sec sm" data-act="novaVendaCliente" data-id="${c.id}">+ Venda</button>
+    </div>
+  </div>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="stat ${vencidas.length?'red':'green'}"><span class="muted small">Vencido</span><b class="money">${brl(soma(vencidas))}</b></div>
+    <div class="stat"><span class="muted small">Total em aberto</span><b class="money">${brl(soma(pend))}</b></div>
+  </div>
+  ${vencidas.length>1?`<button class="btn wa full" data-act="cobrarTudo" data-id="${c.id}" style="margin-bottom:12px">💬 Cobrar tudo que venceu (${brl(soma(vencidas))})</button>`:''}
+  <h2>Parcelas em aberto</h2>
+  <div class="card">${pend.length?pend.map(p=>linhaParcela(p,false)).join(''):'<div class="empty">Nenhuma parcela em aberto 🎉</div>'}</div>
+  <h2>Compras</h2>
+  <div class="card">${vs.length?vs.map(linhaVenda).join(''):'<div class="empty">Nenhuma compra ainda.</div>'}</div>`;
+}
+function linhaVenda(v){
+  const ps=db.parcelas.filter(p=>p.vendaId===v.id);const pagas=ps.filter(p=>p.pago).length;
+  return `<div class="item" data-act="verVenda" data-id="${v.id}" style="cursor:pointer">
+    <div class="grow"><div class="t">${esc(v.desc||'Venda')}</div>
+    <div class="muted small">${fmt(v.data)} · ${esc(cliente(v.clienteId).nome)} · ${FORMAS[v.forma]||''} · ${ps.length>1?`${pagas}/${ps.length} pagas`:(pagas?'paga':'a receber')}</div></div>
+    <div class="money" style="font-weight:650">${brl(v.valor)}</div></div>`;
+}
+function formCliente(c){
+  c=c||{nome:'',tel:'',end:'',obs:''};
+  sheet(`<h3>${c.id?'Editar cliente':'Novo cliente'}</h3>
+    <label>Nome *</label><input id="fNome" value="${esc(c.nome)}" autocomplete="off">
+    <label>WhatsApp (com DDD)</label><input id="fTel" type="tel" inputmode="tel" placeholder="(11) 98765-4321" value="${esc(fmtTel(c.tel))}">
+    <label>Endereço</label><input id="fEnd" value="${esc(c.end)}">
+    <label>Observações</label><input id="fObs" value="${esc(c.obs)}" placeholder="ex.: prefere receber no fim do mês">
+    <div class="actions">${c.id?`<button class="btn danger" data-act="excluirCliente" data-id="${c.id}">Excluir</button>`:''}<button class="btn ghost" data-act="fechar">Cancelar</button><button class="btn" id="fSalvar">Salvar</button></div>`);
+  document.getElementById('fSalvar').onclick=()=>{
+    const nome=document.getElementById('fNome').value.trim();if(!nome)return toast('Informe o nome');
+    const dados={nome,tel:soDigitos(document.getElementById('fTel').value),end:document.getElementById('fEnd').value.trim(),obs:document.getElementById('fObs').value.trim()};
+    let id=c.id;
+    if(id)Object.assign(db.clientes.find(x=>x.id===id),dados);else{id=uid();db.clientes.push({id,...dados,criado:hoje()})}
+    salvar();fechar();toast('Cliente salvo');
+    if(formCliente.cb){const cb=formCliente.cb;formCliente.cb=null;cb(id)}else{sub.cliente=id;ir('clientes')}
+  };
+  setTimeout(()=>document.getElementById('fNome').focus(),50);
+}
+
+/* ---------- Nova venda ---------- */
+let rascunho=null;
+function novoRascunho(clienteId){
+  const h=hoje();
+  return {clienteId:clienteId||'',data:h,desc:'',valor:'',custo:'',forma:'pix',nParc:1,modo:'mes',primeiraVenc:h,entrada:true};
+}
+function vNova(){
+  if(!rascunho)rascunho=novoRascunho();
+  const r=rascunho;
+  const clientes=[...db.clientes].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR'));
+  app.innerHTML=`<div class="card">
+    <label style="margin-top:0">Cliente *</label>
+    <div class="row"><select id="vCli" class="grow"><option value="">Selecione…</option>${clientes.map(c=>`<option value="${c.id}" ${c.id===r.clienteId?'selected':''}>${esc(c.nome)}</option>`).join('')}</select>
+    <button class="btn sec" data-act="novoClienteVenda" style="flex:none">+ Novo</button></div>
+    <label>O que a pessoa levou</label><textarea id="vDesc" style="min-height:64px" placeholder="ex.: Malbec 100ml + hidratante Nativa SPA">${esc(r.desc)}</textarea>
+    <div class="grid2">
+      <div><label>Valor da venda (R$) *</label><input id="vValor" inputmode="decimal" placeholder="0,00" value="${esc(r.valor)}"></div>
+      <div><label>Você pagou (R$)</label><input id="vCusto" inputmode="decimal" placeholder="0,00" value="${esc(r.custo)}"></div>
+    </div>
+    <div id="vLucro" class="muted small" style="margin-top:6px"></div>
+    <label>Data da venda</label><input id="vData" type="date" value="${r.data}">
+    <label>Forma de pagamento</label>
+    <div class="seg" id="vForma">${Object.entries(FORMAS).map(([k,t])=>`<button data-v="${k}" class="${r.forma===k?'on':''}">${t}</button>`).join('')}</div>
+    <label>Parcelas</label>
+    <select id="vParc">${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${r.nParc==i+1?'selected':''}>${i===0?'À vista (1x)':`${i+1}x`}</option>`).join('')}</select>
+    <div id="vParcOpts"></div>
+  </div>
+  <div class="card" id="vPrev"></div>
+  <button class="btn full" id="vSalvar" style="padding:14px">Salvar venda</button>
+  <div style="height:8px"></div><button class="btn ghost full" data-act="limparVenda">Limpar</button>`;
+  const $=id=>document.getElementById(id);
+  const ler=()=>{r.clienteId=$('vCli').value;r.desc=$('vDesc').value;r.valor=$('vValor').value;r.custo=$('vCusto').value;r.data=$('vData').value||hoje();r.nParc=+$('vParc').value;
+    if($('vModo'))r.modo=$('vModo').value; if($('vVenc'))r.primeiraVenc=$('vVenc').value||r.data; if($('vEntrada'))r.entrada=$('vEntrada').checked;};
+  const opts=()=>{
+    const n=r.nParc;
+    if(n===1){
+      $('vParcOpts').innerHTML=`<label class="check"><input type="checkbox" id="vEntrada" ${r.entrada?'checked':''}> Já recebi o pagamento</label>
+      ${r.entrada?'':`<label>Vai pagar em</label><input id="vVenc" type="date" value="${r.primeiraVenc}">`}`;
+    }else{
+      $('vParcOpts').innerHTML=`<label class="check"><input type="checkbox" id="vEntrada" ${r.entrada?'checked':''}> A 1ª parcela foi paga hoje (entrada)</label>
+      <label>Como vencem as parcelas?</label>
+      <select id="vModo"><option value="mes" ${r.modo==='mes'?'selected':''}>Mesmo dia todo mês</option><option value="30" ${r.modo==='30'?'selected':''}>A cada 30 dias</option></select>
+      <label>${r.entrada?'Data da entrada (1ª parcela)':'Vencimento da 1ª parcela'}</label><input id="vVenc" type="date" value="${r.primeiraVenc}">`;
+    }
+    ['vEntrada','vModo','vVenc'].forEach(id=>{const el=$(id);if(el)el.onchange=()=>{ler();if(id==='vEntrada'){if(r.entrada&&r.nParc===1)r.primeiraVenc=r.data;else if(!r.entrada&&r.nParc===1&&r.primeiraVenc<=r.data)r.primeiraVenc=addDias(r.data,30);opts()}prev()}});
+  };
+  const prev=()=>{
+    const v=centavos(r.valor),c=centavos(r.custo);
+    $('vLucro').innerHTML=v&&c?`Lucro nesta venda: <b style="color:var(--pri)">${brl(v-c)}</b> (${Math.round((v-c)/v*100)}%)`:'';
+    if(!v){$('vPrev').innerHTML='<div class="muted">Preencha o valor para ver as parcelas.</div>';return}
+    const fake={id:'x',clienteId:'',data:r.data,valor:v,nParc:r.nParc,modo:r.modo,primeiraVenc:r.nParc===1&&r.entrada?r.data:r.primeiraVenc,forma:r.forma};
+    const ps=gerarParcelas(fake,r.entrada);
+    $('vPrev').innerHTML=`<b>Parcelas</b>`+ps.map(p=>`<div class="item" style="padding:8px 0"><div class="grow">${p.total>1?`${p.n}ª parcela`:'Pagamento'} · ${fmt(p.venc)}</div><span class="money">${brl(p.valor)}</span>${p.pago?'<span class="tag green">paga</span>':''}</div>`).join('');
+  };
+  ['vCli','vDesc','vValor','vCusto','vData'].forEach(id=>$(id).oninput=()=>{ler();prev()});
+  $('vData').onchange=()=>{ler();if(r.nParc===1&&r.entrada)r.primeiraVenc=r.data;opts();prev()};
+  $('vParc').onchange=()=>{ler();r.entrada=r.nParc===1;r.primeiraVenc=r.entrada?r.data:addDias(r.data,30);opts();prev()};
+  $('vForma').onclick=e=>{const b=e.target.closest('button');if(!b)return;r.forma=b.dataset.v;$('vForma').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))};
+  $('vSalvar').onclick=()=>{
+    ler();const v=centavos(r.valor);
+    if(!r.clienteId)return toast('Escolha o cliente');
+    if(!v)return toast('Informe o valor da venda');
+    const venda={id:uid(),clienteId:r.clienteId,data:r.data,desc:r.desc.trim(),valor:v,custo:centavos(r.custo),forma:r.forma,nParc:r.nParc,modo:r.modo,
+      primeiraVenc:r.nParc===1&&r.entrada?r.data:r.primeiraVenc,criado:new Date().toISOString()};
+    const ps=gerarParcelas(venda,r.entrada);
+    db.vendas.push(venda);db.parcelas.push(...ps);salvar();rascunho=null;
+    toast('Venda salva!');
+    const abertas=ps.filter(p=>!p.pago);
+    if(abertas.length)ofereceAgenda(venda,abertas);else ir('inicio');
+  };
+  opts();prev();
+}
+function ofereceAgenda(v,abertas){
+  const c=cliente(v.clienteId);
+  sheet(`<h3>✅ Venda salva</h3><p class="muted">${abertas.length} parcela(s) a receber de <b>${esc(c.nome)}</b>, a primeira em ${fmt(abertas[0].venc)}.</p>
+  <p>Quer colocar os vencimentos na agenda do celular? Assim o celular te avisa no dia de cobrar.</p>
+  <div class="actions"><button class="btn ghost" data-act="fecharIr" data-tab="inicio">Agora não</button><a class="btn" style="text-align:center;text-decoration:none" href="${linkAgendaVenda(v,abertas)}" target="_blank" rel="noopener" data-act="fecharIr" data-tab="inicio">📅 Pôr na agenda</a></div>`);
+}
+
+/* ---------- Agenda (Google Agenda) ---------- */
+const ymd=s=>s.replace(/-/g,'');
+function linkAgendaVenda(v,abertas){
+  const c=cliente(v.clienteId);const n=abertas.length;const p0=abertas[0];
+  const params=new URLSearchParams({action:'TEMPLATE',text:`💰 Cobrar ${c.nome} – ${brl(p0.valor)}`,
+    dates:`${ymd(p0.venc)}/${ymd(addDias(p0.venc,1))}`,
+    details:`Parcela da venda: ${v.desc||'compra'}\nTotal da venda: ${brl(v.valor)} em ${v.nParc}x\nAbra o app Minhas Vendas para cobrar pelo WhatsApp.\n${location.origin+location.pathname}`});
+  let url='https://calendar.google.com/calendar/render?'+params.toString();
+  if(n>1)url+='&recur='+encodeURIComponent(v.modo==='30'?`RRULE:FREQ=DAILY;INTERVAL=30;COUNT=${n}`:`RRULE:FREQ=MONTHLY;COUNT=${n}`);
+  return url;
+}
+function linkLembrete(tipo){
+  const h=hoje();let d=dataDe(addDias(h,1));
+  if(tipo==='semanal'){while(d.getDay()!==1)d.setDate(d.getDate()+1)}
+  const dia=ymd(isoDe(d));
+  const params=new URLSearchParams({action:'TEMPLATE',
+    text:tipo==='diario'?'📋 Ver cobranças do dia':'📊 Resumo da semana – vendas e cobranças',
+    dates:tipo==='diario'?`${dia}T090000/${dia}T091000`:`${dia}T080000/${dia}T081500`,ctz:'America/Sao_Paulo',
+    details:`Abra o app Minhas Vendas para ver quem cobrar:\n${location.origin+location.pathname}`});
+  return 'https://calendar.google.com/calendar/render?'+params.toString()+'&recur='+encodeURIComponent(tipo==='diario'?'RRULE:FREQ=DAILY':'RRULE:FREQ=WEEKLY;BYDAY=MO');
+}
+
+/* ---------- Vendas & Gastos ---------- */
+function vVendas(){
+  if(sub.venda)return vVenda(sub.venda);
+  const ym=sub.vendasMes;
+  let out=`<div class="seg" style="margin-bottom:12px"><button data-act="vTipo" data-v="vendas" class="${sub.vendasTipo==='vendas'?'on':''}">Vendas</button><button data-act="vTipo" data-v="gastos" class="${sub.vendasTipo==='gastos'?'on':''}">Gastos</button></div>
+  <div class="monthbar"><button data-act="mesV" data-v="-1">‹</button><b>${nomeMes(ym)}</b><button data-act="mesV" data-v="1">›</button></div>`;
+  if(sub.vendasTipo==='vendas'){
+    const vs=db.vendas.filter(v=>mesDe(v.data)===ym).sort((a,b)=>b.data.localeCompare(a.data)||b.criado.localeCompare(a.criado));
+    out+=`<div class="card">${vs.length?`<div class="between"><b>${vs.length} venda(s)</b><span class="money muted">${brl(soma(vs))}</span></div>`+vs.map(linhaVenda).join(''):'<div class="empty">Nenhuma venda neste mês.</div>'}</div>`;
+  }else{
+    const gs=db.gastos.filter(g=>mesDe(g.data)===ym).sort((a,b)=>b.data.localeCompare(a.data));
+    out+=`<button class="btn sec full" data-act="novoGasto" style="margin-bottom:12px">+ Registrar gasto</button>
+    <div class="card">${gs.length?`<div class="between"><b>Gastos do mês</b><span class="money muted">${brl(soma(gs))}</span></div>`+gs.map(g=>`<div class="item" data-act="editarGasto" data-id="${g.id}" style="cursor:pointer"><div class="grow"><div class="t">${esc(g.desc||g.cat)}</div><div class="muted small">${fmt(g.data)} · ${esc(g.cat)}</div></div><div class="money" style="color:var(--red);font-weight:650">−${brl(g.valor)}</div></div>`).join(''):'<div class="empty">Nenhum gasto neste mês.</div>'}</div>
+    <p class="muted small">💡 O custo dos produtos já entra em cada venda (campo "quanto você pagou"). Aqui registre os outros gastos: frete, sacolas, brindes, amostras etc.</p>`;
+  }
+  app.innerHTML=out;
+}
+function vVenda(id){
+  const v=venda(id);if(!v){sub.venda=null;return vVendas()}
+  const ps=db.parcelas.filter(p=>p.vendaId===id).sort((a,b)=>a.n-b.n);
+  app.innerHTML=`<button class="btn ghost sm" data-act="voltarVendas">← Voltar</button>
+  <div class="card" style="margin-top:12px">
+    <div class="muted small">${fmt(v.data)} · ${FORMAS[v.forma]||''}</div>
+    <div style="font-size:19px;font-weight:700;margin:2px 0" data-act="verCliente" data-id="${v.clienteId}">${esc(cliente(v.clienteId).nome)} ›</div>
+    <div>${esc(v.desc||'Sem descrição')}</div><hr>
+    <div class="between"><span class="muted">Valor da venda</span><b class="money">${brl(v.valor)}</b></div>
+    <div class="between"><span class="muted">Você pagou</span><span class="money">${brl(v.custo)}</span></div>
+    <div class="between"><span class="muted">Lucro</span><b class="money" style="color:var(--pri)">${brl(v.valor-v.custo)}</b></div>
+  </div>
+  <h2>Parcelas</h2>
+  <div class="card">${ps.map(p=>{const s=situacao(p);return `<div class="item"><div class="grow"><div class="t">${p.total>1?`${p.n}ª parcela`:'Pagamento'} · ${fmt(p.venc)}</div>
+    <div class="small"><span class="tag ${s.cls}">${s.txt}</span>${p.pago?` <span class="muted">em ${fmt(p.pagoEm)} · ${FORMAS[p.pagoForma]||''}</span>`:''}</div></div>
+    <span class="money" style="font-weight:650">${brl(p.valor)}</span>
+    ${p.pago?`<button class="btn ghost sm" data-act="desfazer" data-id="${p.id}">Desfazer</button>`:`<button class="icon-btn wa" data-act="cobrar" data-id="${p.id}">💬</button><button class="icon-btn ok" data-act="receber" data-id="${p.id}">✔</button>`}</div>`}).join('')}</div>
+  ${ps.some(p=>!p.pago)?`<a class="btn sec full" style="display:block;text-align:center;text-decoration:none;margin-bottom:10px" href="${linkAgendaVenda(v,ps.filter(p=>!p.pago))}" target="_blank" rel="noopener">📅 Pôr vencimentos na agenda</a>`:''}
+  <button class="btn danger full" data-act="excluirVenda" data-id="${v.id}">Excluir venda</button>`;
+}
+const CATS=['Frete','Sacolas e embalagens','Brindes e amostras','Divulgação','Pedido / reposição','Outros'];
+function formGasto(g){
+  g=g||{data:hoje(),desc:'',cat:CATS[0],valor:0};
+  sheet(`<h3>${g.id?'Editar gasto':'Novo gasto'}</h3>
+  <label>Valor (R$) *</label><input id="gValor" inputmode="decimal" placeholder="0,00" value="${valorInput(g.valor)}">
+  <label>Categoria</label><select id="gCat">${CATS.map(c=>`<option ${c===g.cat?'selected':''}>${c}</option>`).join('')}</select>
+  <label>Descrição</label><input id="gDesc" value="${esc(g.desc)}" placeholder="ex.: 50 sacolinhas">
+  <label>Data</label><input id="gData" type="date" value="${g.data}">
+  <div class="actions">${g.id?`<button class="btn danger" data-act="excluirGasto" data-id="${g.id}">Excluir</button>`:''}<button class="btn ghost" data-act="fechar">Cancelar</button><button class="btn" id="gSalvar">Salvar</button></div>`);
+  document.getElementById('gSalvar').onclick=()=>{
+    const valor=centavos(document.getElementById('gValor').value);if(!valor)return toast('Informe o valor');
+    const d={valor,cat:document.getElementById('gCat').value,desc:document.getElementById('gDesc').value.trim(),data:document.getElementById('gData').value||hoje()};
+    if(g.id)Object.assign(db.gastos.find(x=>x.id===g.id),d);else db.gastos.push({id:uid(),...d});
+    salvar();fechar();sub.vendasMes=mesDe(d.data);render();toast('Gasto salvo');
+  };
+}
+
+/* ---------- Resumo ---------- */
+function vResumo(){
+  const ym=sub.mes;const h=hoje();
+  const vs=db.vendas.filter(v=>mesDe(v.data)===ym);
+  const gs=db.gastos.filter(g=>mesDe(g.data)===ym);
+  const recebidas=db.parcelas.filter(p=>p.pago&&p.pagoEm&&mesDe(p.pagoEm)===ym);
+  const aReceberMes=db.parcelas.filter(p=>!p.pago&&mesDe(p.venc)===ym);
+  const vendido=soma(vs),custo=soma(vs,'custo'),gastos=soma(gs),lucro=vendido-custo-gastos;
+  const porForma=Object.keys(FORMAS).map(k=>[k,soma(recebidas.filter(p=>p.pagoForma===k))]);
+  const pend=pendentes();const atrasado=soma(pend.filter(p=>p.venc<h));
+  // semana atual (segunda a domingo)
+  const d=dataDe(h);const seg=addDias(h,-((d.getDay()+6)%7));const dom=addDias(seg,6);
+  const recSem=soma(db.parcelas.filter(p=>p.pago&&p.pagoEm>=seg&&p.pagoEm<=dom));
+  const abrSem=soma(pend.filter(p=>p.venc>=seg&&p.venc<=dom));
+  const vendSem=soma(db.vendas.filter(v=>v.data>=seg&&v.data<=dom));
+  app.innerHTML=`<h2>Esta semana <span class="muted small">(${fmtCurto(seg)} a ${fmtCurto(dom)})</span></h2>
+  <div class="grid2" style="margin-bottom:6px">
+    <div class="stat green"><span class="muted small">Recebido</span><b class="money">${brl(recSem)}</b></div>
+    <div class="stat amber"><span class="muted small">Falta receber</span><b class="money">${brl(abrSem)}</b></div>
+    <div class="stat"><span class="muted small">Vendido</span><b class="money">${brl(vendSem)}</b></div>
+    <div class="stat red"><span class="muted small">Atrasado (total)</span><b class="money">${brl(atrasado)}</b></div>
+  </div>
+  <h2>Mês</h2>
+  <div class="monthbar"><button data-act="mesR" data-v="-1">‹</button><b>${nomeMes(ym)}</b><button data-act="mesR" data-v="1">›</button></div>
+  <div class="card">
+    <div class="between"><span>Vendido (${vs.length} venda${vs.length===1?'':'s'})</span><b class="money">${brl(vendido)}</b></div>
+    <div class="between"><span class="muted">− Custo dos produtos</span><span class="money">${brl(custo)}</span></div>
+    <div class="between"><span class="muted">− Outros gastos</span><span class="money">${brl(gastos)}</span></div><hr>
+    <div class="between"><b>Lucro</b><b class="money" style="font-size:20px;color:${lucro>=0?'var(--pri)':'var(--red)'}">${brl(lucro)}</b></div>
+  </div>
+  <div class="card">
+    <div class="between"><span>Recebido no mês</span><b class="money" style="color:var(--pri)">${brl(soma(recebidas))}</b></div>
+    ${porForma.map(([k,val])=>`<div class="between muted small" style="padding-left:12px"><span>${FORMAS[k]}</span><span class="money">${brl(val)}</span></div>`).join('')}
+    <hr><div class="between"><span>Ainda a receber (vence neste mês)</span><b class="money" style="color:var(--amber)">${brl(soma(aReceberMes))}</b></div>
+  </div>
+  <div class="card"><div class="between"><span>Total a receber (todos os meses)</span><b class="money">${brl(soma(pend))}</b></div></div>`;
+}
+
+/* ---------- Configurações ---------- */
+function vConfig(){
+  const c=db.config;
+  app.innerHTML=`<div class="card">
+    <b>Seus dados</b>
+    <label>Seu nome (assinatura das mensagens)</label><input id="cNome" value="${esc(c.nome)}" placeholder="ex.: Ana – Boticário">
+  </div>
+  <div class="card"><b>Pix</b><p class="muted small" style="margin:4px 0 0">Usado para gerar o código "Pix copia e cola" com o valor certo na mensagem de cobrança.</p>
+    <label>Tipo de chave</label><select id="cTipo">${[['cpf','CPF'],['cnpj','CNPJ'],['tel','Celular'],['email','E-mail'],['aleatoria','Chave aleatória']].map(([k,t])=>`<option value="${k}" ${c.pixTipo===k?'selected':''}>${t}</option>`).join('')}</select>
+    <label>Chave Pix</label><input id="cChave" value="${esc(c.pixChave)}" autocomplete="off">
+    <label>Nome do titular da conta</label><input id="cPNome" value="${esc(c.pixNome)}" placeholder="como aparece no banco">
+    <label>Cidade</label><input id="cCidade" value="${esc(c.pixCidade)}" placeholder="ex.: São Paulo">
+    <button class="btn sec full" style="margin-top:12px" data-act="testePix">Testar código Pix de R$ 1,00</button>
+  </div>
+  <div class="card"><b>Mensagem de cobrança</b>
+    <p class="muted small" style="margin:4px 0 0">Palavras que são trocadas automaticamente: {cliente} {parcela} {valor} {produtos} {situacao} {vencimento} {pix} {assinatura}</p>
+    <textarea id="cMsg" style="min-height:150px">${esc(c.msg)}</textarea>
+    <button class="btn ghost sm" style="margin-top:8px" data-act="msgPadrao">Voltar à mensagem padrão</button>
+  </div>
+  <button class="btn full" id="cSalvar" style="padding:14px;margin-bottom:12px">Salvar configurações</button>
+  <div class="card"><b>📅 Lembretes no celular</b>
+    <p class="muted small">Cria um lembrete repetido na sua agenda do Google para abrir o app e ver quem cobrar.</p>
+    <a class="btn sec full" style="display:block;text-align:center;text-decoration:none;margin-bottom:8px" target="_blank" rel="noopener" href="${linkLembrete('diario')}">Lembrete diário (9h)</a>
+    <a class="btn sec full" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="${linkLembrete('semanal')}">Resumo semanal (segunda, 8h)</a>
+  </div>
+  <div class="card"><b>💾 Backup</b>
+    <p class="muted small">Os dados ficam guardados só neste celular. Faça backup toda semana e mande o arquivo para o seu WhatsApp ou Google Drive. ${c.ultimoBackup?`Último: ${fmt(c.ultimoBackup.slice(0,10))}.`:'Nenhum backup feito ainda.'}</p>
+    <button class="btn full" data-act="backup" style="margin-bottom:8px">Fazer backup agora</button>
+    <button class="btn ghost full" data-act="restaurar">Restaurar de um backup</button>
+    <input type="file" id="arqRestaurar" accept=".json,application/json" hidden>
+  </div>
+  <div class="card"><b>Instalar no celular</b>
+    <p class="muted small" style="margin-bottom:0">No Chrome, toque nos 3 pontinhos ⋮ e depois em <b>"Adicionar à tela inicial"</b> (ou "Instalar app"). O app ganha um ícone e funciona até sem internet.</p>
+    ${instalarEvt?'<button class="btn sec full" style="margin-top:10px" data-act="instalar">Instalar agora</button>':''}
+  </div>
+  <button class="btn danger full" data-act="apagarTudo">Apagar todos os dados</button>
+  <p class="muted small" style="text-align:center">Minhas Vendas · v1</p>`;
+  document.getElementById('cSalvar').onclick=()=>{
+    Object.assign(db.config,{nome:val('cNome'),pixTipo:val('cTipo'),pixChave:val('cChave'),pixNome:val('cPNome'),pixCidade:val('cCidade'),msg:document.getElementById('cMsg').value||MSG_PADRAO});
+    salvar();toast('Configurações salvas');
+  };
+  document.getElementById('arqRestaurar').onchange=restaurar;
+}
+const val=id=>document.getElementById(id).value.trim();
+
+/* ================= Folhas (modais) ================= */
+function sheet(html){fechar();const o=document.createElement('div');o.className='overlay';o.id='overlay';o.innerHTML=`<div class="sheet">${html}</div>`;
+  o.addEventListener('click',e=>{if(e.target===o)fechar()});document.body.appendChild(o)}
+function fechar(){const o=document.getElementById('overlay');if(o)o.remove()}
+
+function abrirCobranca(ps){
+  const v=venda(ps[0].vendaId)||{};const c=cliente(ps[0].clienteId);
+  if(!c.tel){toast('Cadastre o WhatsApp do cliente');formCliente(c);return}
+  let comPix=(ps.length>1||v.forma==='pix')&&pixOk();
+  const desenhar=()=>{
+    const msg=montarMensagem(ps,comPix);
+    sheet(`<h3>Cobrar ${esc(c.nome)}</h3><div class="muted small">${esc(fmtTel(c.tel))} · ${brl(soma(ps))}</div>
+    <label class="check"><input type="checkbox" id="mPix" ${comPix?'checked':''} ${pixOk()?'':'disabled'}> Incluir código Pix copia e cola ${pixOk()?'':'<span class="muted small">(configure o Pix em ⚙️)</span>'}</label>
+    <label>Mensagem (pode editar)</label><textarea id="mTxt" style="min-height:220px">${esc(msg)}</textarea>
+    <div class="actions"><button class="btn wa" id="mEnviar">💬 ${comPix?'1. Enviar mensagem':'Abrir WhatsApp'}</button></div>`);
+    document.getElementById('mPix').onchange=e=>{comPix=e.target.checked;desenhar()};
+    document.getElementById('mEnviar').onclick=()=>{
+      const t=document.getElementById('mTxt').value;
+      window.open(`https://wa.me/${telWa(c.tel)}?text=${encodeURIComponent(t)}`,'_blank');
+      ps.forEach(p=>p.cobradoEm=hoje());salvar();
+      if(!comPix)return fechar();
+      const cod=gerarPix(soma(ps));abrirCobranca.pix=cod;
+      sheet(`<h3>2. Agora envie o código Pix</h3><p class="muted small">Ele vai sozinho numa mensagem, assim ${esc(c.nome.split(' ')[0])} só precisa segurar e copiar.</p>
+      <code class="pix">${esc(cod)}</code>
+      <div class="actions"><button class="btn ghost" data-act="fechar">Concluir</button><a class="btn wa" style="text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${telWa(c.tel)}?text=${encodeURIComponent(cod)}">💬 2. Enviar Pix</a></div>
+      <button class="btn sec full" style="margin-top:10px" data-act="copiarPix">Copiar código</button>`);
+    };
+  };
+  desenhar();
+}
+function abrirRecebimento(p){
+  const v=venda(p.vendaId)||{};
+  sheet(`<h3>Confirmar recebimento</h3><div class="muted">${esc(cliente(p.clienteId).nome)} · ${p.total>1?`parcela ${p.n}/${p.total}`:'pagamento'} · <b>${brl(p.valor)}</b></div>
+  <label>Recebido em</label><input id="rData" type="date" value="${hoje()}">
+  <label>Como pagou</label><div class="seg" id="rForma">${Object.entries(FORMAS).map(([k,t])=>`<button data-v="${k}" class="${(v.forma||'pix')===k?'on':''}">${t}</button>`).join('')}</div>
+  <div class="actions"><button class="btn ghost" data-act="fechar">Cancelar</button><button class="btn" id="rOk">✔ Recebi</button></div>`);
+  let forma=v.forma||'pix';
+  document.getElementById('rForma').onclick=e=>{const b=e.target.closest('button');if(!b)return;forma=b.dataset.v;document.querySelectorAll('#rForma button').forEach(x=>x.classList.toggle('on',x===b))};
+  document.getElementById('rOk').onclick=()=>{p.pago=true;p.pagoEm=document.getElementById('rData').value||hoje();p.pagoForma=forma;salvar();fechar();render();toast(`Recebido ${brl(p.valor)} ✔`)};
+}
+
+/* ================= Backup ================= */
+async function backup(){
+  db.config.ultimoBackup=new Date().toISOString();salvar();
+  const nome=`backup-minhas-vendas-${hoje()}.json`;
+  const blob=new Blob([JSON.stringify(db)],{type:'application/json'});
+  const file=new File([blob],nome,{type:'application/json'});
+  try{
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Backup Minhas Vendas'});toast('Backup pronto');render();return}
+  }catch(e){if(e.name==='AbortError'){return}}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nome;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  toast('Backup salvo em Downloads');render();
+}
+function restaurar(e){
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();rd.onload=()=>{
+    try{const d=JSON.parse(rd.result);if(!d.clientes||!d.parcelas)throw 0;
+      if(!confirm(`Restaurar backup com ${d.clientes.length} clientes e ${d.vendas.length} vendas? Os dados atuais serão substituídos.`))return;
+      db={...vazio(),...d,config:{...vazio().config,...d.config}};salvar();toast('Backup restaurado');ir('inicio');
+    }catch(_){alert('Arquivo de backup inválido.')}
+  };rd.readAsText(f);
+}
+
+/* ================= Ações ================= */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');if(!el)return;
+  const a=el.dataset.act,id=el.dataset.id;
+  const P=()=>db.parcelas.find(p=>p.id===id);
+  switch(a){
+    case 'ir':ir(el.dataset.tab);break;
+    case 'fechar':fechar();break;
+    case 'fecharIr':setTimeout(()=>{fechar();ir(el.dataset.tab)},0);break; // espera o link abrir antes de remover
+    case 'sub':sub.inicio=el.dataset.v;render();break;
+    case 'cobrar':e.stopPropagation();abrirCobranca([P()]);break;
+    case 'cobrarTudo':abrirCobranca(pendentes().filter(p=>p.clienteId===id&&p.venc<=hoje()));break;
+    case 'receber':e.stopPropagation();abrirRecebimento(P());break;
+    case 'desfazer':{const p=P();if(confirm('Marcar esta parcela como NÃO recebida?')){p.pago=false;p.pagoEm=null;p.pagoForma=null;salvar();render()}break}
+    case 'copiarPix':navigator.clipboard.writeText(abrirCobranca.pix).then(()=>toast('Código Pix copiado'));break;
+    case 'verCliente':if(e.target.closest('.icon-btn'))return;fechar();sub.cliente=id;ir('clientes');break;
+    case 'voltarClientes':sub.cliente=null;render();break;
+    case 'novoCliente':formCliente();break;
+    case 'editarCliente':formCliente(db.clientes.find(c=>c.id===id));break;
+    case 'excluirCliente':{
+      const n=db.vendas.filter(v=>v.clienteId===id).length;
+      if(!confirm(n?`Excluir este cliente e as ${n} venda(s) dele?`:'Excluir este cliente?'))return;
+      const vids=new Set(db.vendas.filter(v=>v.clienteId===id).map(v=>v.id));
+      db.clientes=db.clientes.filter(c=>c.id!==id);db.vendas=db.vendas.filter(v=>!vids.has(v.id));db.parcelas=db.parcelas.filter(p=>!vids.has(p.vendaId));
+      salvar();fechar();sub.cliente=null;ir('clientes');toast('Cliente excluído');break}
+    case 'novaVendaCliente':rascunho=novoRascunho(id);ir('nova');break;
+    case 'novoClienteVenda':formCliente.cb=cid=>{rascunho.clienteId=cid;vNova()};formCliente();break;
+    case 'limparVenda':rascunho=null;vNova();break;
+    case 'verVenda':fechar();sub.venda=id;ir('vendas');break;
+    case 'voltarVendas':sub.venda=null;render();break;
+    case 'excluirVenda':if(confirm('Excluir esta venda e todas as parcelas dela?')){db.vendas=db.vendas.filter(v=>v.id!==id);db.parcelas=db.parcelas.filter(p=>p.vendaId!==id);salvar();sub.venda=null;render();toast('Venda excluída')}break;
+    case 'vTipo':sub.vendasTipo=el.dataset.v;render();break;
+    case 'mesV':sub.vendasMes=addMesYM(sub.vendasMes,+el.dataset.v);render();break;
+    case 'mesR':sub.mes=addMesYM(sub.mes,+el.dataset.v);render();break;
+    case 'novoGasto':formGasto();break;
+    case 'editarGasto':formGasto(db.gastos.find(g=>g.id===id));break;
+    case 'excluirGasto':if(confirm('Excluir este gasto?')){db.gastos=db.gastos.filter(g=>g.id!==id);salvar();fechar();render()}break;
+    case 'backup':backup();break;
+    case 'restaurar':document.getElementById('arqRestaurar').click();break;
+    case 'msgPadrao':document.getElementById('cMsg').value=MSG_PADRAO;toast('Toque em Salvar para confirmar');break;
+    case 'testePix':{
+      Object.assign(db.config,{pixTipo:val('cTipo'),pixChave:val('cChave'),pixNome:val('cPNome'),pixCidade:val('cCidade')});salvar();
+      if(!pixOk())return toast('Preencha chave, nome e cidade');
+      const cod=gerarPix(100);abrirCobranca.pix=cod;
+      sheet(`<h3>Teste do Pix</h3><p class="muted small">Copie o código, abra o app do seu banco em Pix → "Pix copia e cola" e confira se aparece seu nome e R$ 1,00. Não precisa concluir o pagamento.</p><code class="pix">${esc(cod)}</code>
+      <div class="actions"><button class="btn ghost" data-act="fechar">Fechar</button><button class="btn" data-act="copiarPix">Copiar código</button></div>`);break}
+    case 'apagarTudo':if(confirm('Apagar TODOS os dados deste celular? Isso não pode ser desfeito. Faça um backup antes!')&&confirm('Tem certeza mesmo?')){db=vazio();salvar();ir('inicio')}break;
+    case 'instalar':if(instalarEvt){instalarEvt.prompt();instalarEvt=null}break;
+  }
+});
+// Ao trocar de aba pelo menu, sair de telas de detalhe
+document.getElementById('nav').addEventListener('click',()=>{sub.cliente=null;sub.venda=null},true);
+
+/* ================= PWA ================= */
+let instalarEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();instalarEvt=e});
+if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+render();
+</script>
+</body>
+</html>
